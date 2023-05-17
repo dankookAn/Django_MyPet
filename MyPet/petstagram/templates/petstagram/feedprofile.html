@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<title>{{profile.user.username}}'s Profile</title>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include the Bulma CSS framework for styling -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    
+</head>
+
+<style>
+    .big_profile_box {
+        width: 120px;
+        height: 120px;
+        border-radius: 70%;
+        overflow: hidden;
+    }
+        .profile_img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .feed_box {
+            background-color: white;
+            width: 400px;
+            margin: 10px;
+            min-height: auto;
+            padding-bottom: 10px;
+        }
+    
+
+</style>
+
+<body>
+    <section class="hero is-small is-success mb-4">
+        <div class="hero-body">
+            <div style="display: flex; align-items: center; ">
+                <div class="big_profile_box">
+                  <img class="profile_img"
+                       src={{profile.profile_image}}>
+                </div>
+                <div class="name_content"style = "margin-left: 30px">
+                    <h1 class="title is-1">{{profile.user.username|upper}}'s Feed</h1>
+                    <p class="subtitle is-4">
+                        @{{ profile.user.username|lower }}
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="buttons has-addons">
+                        {% if profile in user.profile.follows.all %}
+                            <button class="button is-success is-static">Follow</button>
+                            <button class="button is-danger" name="follow" value="unfollow">
+                                Unfollow
+                            </button>
+                        {% else %}
+                            <button class="button is-success" name="follow" value="follow">
+                                Follow
+                            </button>
+                            <button class="button is-danger is-static">Unfollow</button>
+                        {% endif %}
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>   
+        </div>
+    </section>
+    <div class="container">
+        <div class="columns">
+
+            <div class="column">
+
+                <div class="border feed_box">
+                    <img style = "size: 50%" src="https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg">
+                </div>
+            
+                <div class="content">
+                    {% for dweet in profile.user.dweets.all %}
+                        <div class="box">
+                            {{ dweet.body }}
+                            <span class="is-small has-text-grey-light">
+                                ({{ dweet.created_at }})
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            
+            </div>
+            
+            <div class="column is-one-third">
+            
+                <div class="block">
+
+                </div>
+            
+                <div class="block">
+                    <h3 class="title is-4">
+                        {{profile.user.username}} 님의 팔로우:
+                    </h3>
+                    <div class="content">
+                        <ul>
+                        {% for following in profile.follows.all %}
+                        <div class="block">
+                            <div class="card">
+                              <a href="{% url 'petstagram:profile' profile.id %}">
+                                <div class="card-content">
+                                  <div class="media">
+                                    <div class="media-left">
+                                      <figure class="image is-48x48">
+                                        <img class="profile_img"src={{ following.profile_image }}
+                                             alt="Placeholder image">
+                                      </figure>
+                                    </div>
+                                    <div class="media-content">
+                                      <p class="title is-4">
+                                        {{ following }}
+                                      </p>
+                                      <p class="subtitle is-6">
+                                        @{{ following|lower }}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            
+                <div class="block">
+                    <h3 class="title is-4">
+                        {{profile.user.username}} 님을 팔로우한 유저:
+                    </h3>
+                    <div class="content">
+                        <ul>
+                        {% for follower in profile.followed_by.all %}
+                        <div class="block">
+                            <div class="card">
+                              <a href="{% url 'petstagram:profile' profile.id %}">
+                                <div class="card-content">
+                                  <div class="media">
+                                    <div class="media-left">
+                                      <figure class="image is-48x48">
+                                        <img class="profile_img"src={{ follower.profile_image }}
+                                             alt="Placeholder image">
+                                      </figure>
+                                    </div>
+                                    <div class="media-content">
+                                      <p class="title is-4">
+                                        {{ follower }}
+                                      </p>
+                                      <p class="subtitle is-6">
+                                        @{{ follower|lower }}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            
+                
+            
+            
+            </div>
+            
+            
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
